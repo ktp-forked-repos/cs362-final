@@ -39,15 +39,15 @@ def global_align(v, w, match, mismatch, indel):
             # Set D[i][j] to the max of the recurrences
             if 0 > insert and 0 > delete and 0 > substitute:
                 D[i][j] = (0, START)
-            elif insert > delete and insert > substitute:
+            elif insert < delete and insert < substitute:
                 D[i][j] = (insert, INSERT)
-            elif delete > substitute:
+            elif delete < substitute:
                 D[i][j] = (delete, DELETE)
             else:
                 D[i][j] = (substitute, SUBSTITUTE)
 
-    for row in D:
-        print(row)
+    #for row in D:
+        #print(row)
 
     # Traceback starting at max cell and ending at first 0 encountered
     i, j = m, n
@@ -74,26 +74,37 @@ def global_align(v, w, match, mismatch, indel):
 
 
 
-def centerStar(listofSeq):
+def findCenterSeq(listofSeq):
     
     match = 0
-    mistmatch = 1
+    mismatch = 1
     indel = 1
     
     seqLen = len(listofSeq)
     pwMatrix = [["-"]*seqLen for i in range(seqLen)]
     
+    findMin = []
+    acc = 0
     for seq in listofSeq:
         for seq2 in listofSeq:
             # in1 gives row, in2 gives column 
             in1 = listofSeq.index(seq)
             in2 = listofSeq.index(seq2)
             pwMatrix[in1][in2] = global_align(seq, seq2, match, mismatch, indel)
+            acc += pwMatrix[in1][in2][0]
+        findMin.append(acc)
+        acc = 0
+    posSeq = findMin.index(min(findMin))
     
+    print(pwMatrix)
     
-    
-    
-    
+    return listofSeq[posSeq]
+
+
+def test():
+    testList = ["abdc", "abcd", "accd", "bacd"]
+    result = findCenterSeq(testList)
+    print(result)
     
     
     
