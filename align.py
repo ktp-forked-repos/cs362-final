@@ -71,3 +71,50 @@ def global_align(v, w, match, mismatch, indel):
         back_pointer = D[i][j][1]
 
     return D[m][n][0], v_aligned, w_aligned
+
+
+
+def centerStar(listofSeq):
+    
+    match = 0
+    mistmatch = 1
+    indel = 1
+    
+    seqLen = len(listofSeq)
+    pwMatrix = [["-"]*seqLen for i in range(seqLen)]
+    
+    for seq in listofSeq:
+        for seq2 in listofSeq:
+            # in1 gives row, in2 gives column 
+            in1 = listofSeq.index(seq)
+            in2 = listofSeq.index(seq2)
+            pwMatrix[in1][in2] = global_align(seq, seq2, match, mismatch, indel)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
