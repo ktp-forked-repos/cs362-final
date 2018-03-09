@@ -74,25 +74,30 @@ def global_align(v, w, match, mismatch, indel):
 
 
 
-def centerStar(listofSeq):
+def findCenterSeq(listofSeq):
     
     match = 0
-    mistmatch = 1
+    mismatch = 1
     indel = 1
     
     seqLen = len(listofSeq)
     pwMatrix = [["-"]*seqLen for i in range(seqLen)]
     
+    findMin = []
+    acc = 0
     for seq in listofSeq:
         for seq2 in listofSeq:
             # in1 gives row, in2 gives column 
             in1 = listofSeq.index(seq)
             in2 = listofSeq.index(seq2)
             pwMatrix[in1][in2] = global_align(seq, seq2, match, mismatch, indel)
+            acc += pwMatrix[in1][in2][0]
+        findMin.append(acc)
+        acc = 0
     
-
-def align()
+    posSeq = findMin.index(min(findMin))
     
+    return listofSeq[posSeq]
     
     
 def multipleAlign(refString, listofSeq):
@@ -104,9 +109,11 @@ def multipleAlign(refString, listofSeq):
     
     return centerString
     
-    
-    
-    
+
+def test():
+    testList = ["abdc", "abcd", "accd", "bacd"]
+    result = findCenterSeq(testList)
+    print(result)
     
     
     
