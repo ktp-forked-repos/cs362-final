@@ -33,8 +33,7 @@ def global_align(v, w, match, mismatch, indel):
         for j in range(1, n + 1):
             insert = D[i][j-1][0] + indel
             delete = D[i-1][j][0] + indel
-            substitute = D[i-1][j-1][0] + (match if v[i-1] == w[j-1]
-                                           else mismatch)
+            substitute = D[i-1][j-1][0] + (match if ((v[i-1] == w[j-1]) or (v[i-1] == "-" or w[j-1] == "-")) else mismatch)
 
             # Set D[i][j] to the max of the recurrences
             if 0 > insert and 0 > delete and 0 > substitute:
@@ -77,7 +76,7 @@ def global_align(v, w, match, mismatch, indel):
 def findCenterSeq(listofSeq):
     
     match = 0
-    mismatch = 1
+    mismatch = 3
     indel = 1
     
     seqLen = len(listofSeq)
@@ -97,10 +96,12 @@ def findCenterSeq(listofSeq):
     
     posSeq = findMin.index(min(findMin))
     
+    print(pwMatrix)
+    
     return listofSeq[posSeq]
-    
-    
-def multipleAlign(refString, listofSeq):
+ 
+    '''
+    def multipleAlign(refString, listofSeq):
     listofSeq.remove(refString)
     centerString = refString
     l = len(listofSeq)
@@ -109,32 +110,10 @@ def multipleAlign(refString, listofSeq):
     
     return centerString
     
+    '''
+    
 
 def test():
-    testList = ["abdc", "abcd", "accd", "bacd"]
+    testList = ["ad", "abc", "acd", "ae", "bde"]
     result = findCenterSeq(testList)
     print(result)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
