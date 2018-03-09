@@ -67,7 +67,7 @@ def global_align(v, w, match, mismatch, indel):
             v_aligned = v[i] + v_aligned
             w_aligned = '-' + w_aligned
             for index in range(len(gapInsert)):
-                gapInsert[index]++
+                gapInsert[index]+=
                 
         elif back_pointer == SUBSTITUTE:
             i -= 1
@@ -75,7 +75,7 @@ def global_align(v, w, match, mismatch, indel):
             v_aligned = v[i] + v_aligned
             w_aligned = w[j] + w_aligned
             for index in range(len(gapInsert)):
-                gapInsert[index]++
+                gapInsert[index]+=
                 
         back_pointer = D[i][j][1]
 
