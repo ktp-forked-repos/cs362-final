@@ -54,23 +54,32 @@ def global_align(v, w, match, mismatch, indel):
     v_aligned = ''
     w_aligned = ''
     back_pointer = D[i][j][1]
+    gapInsert = []
     while back_pointer != START:
         if back_pointer == INSERT:
             j -= 1
             v_aligned = '-' + v_aligned
             w_aligned = w[j] + w_aligned
+            gapInsert.append(0);
+            
         elif back_pointer == DELETE:
             i -= 1
             v_aligned = v[i] + v_aligned
             w_aligned = '-' + w_aligned
+            for index in range(len(gapInsert)):
+                gapInsert[index]++
+                
         elif back_pointer == SUBSTITUTE:
             i -= 1
             j -= 1
             v_aligned = v[i] + v_aligned
             w_aligned = w[j] + w_aligned
+            for index in range(len(gapInsert)):
+                gapInsert[index]++
+                
         back_pointer = D[i][j][1]
 
-    return D[m][n][0], v_aligned, w_aligned
+    return D[m][n][0], v_aligned, w_aligned, gapInsert
 
 
 
@@ -101,13 +110,35 @@ def findCenterSeq(listofSeq):
     
     
 def multipleAlign(refString, listofSeq):
+    match = 0
+    mismatch = 1
+    indel = 1
+    
+    listofFinalStr = []
     listofSeq.remove(refString)
     centerString = refString
     l = len(listofSeq)
     for i in range (l):
-        centerString = global_align(centerString, listofSeq[i],)
-    
-    return centerString
+        score = global_align(centerString, listofSeq[i], match, mismatch, indel)
+        centerString = score[1]
+        strAligned = score[2]
+        listofFinalStr.append(strAligned)
+        gapInsert = score[3]
+        
+        for j in range(len(listofFinalStr)):
+            newStr = originStr[:gapInsert[0]]
+            originStr = listofFinalStr[j]
+            for k in range(len(1, gapInsert)):
+                curIndex = gapInsert[k]
+                if k == gapInsert[-1]:
+                    newStr = newStr + "-" + originStr[k:]
+                else:
+                    nextIndex = gapInsert[k + 1]
+                    newStr = newStr + "-" + originStr[k:k+1]
+                
+            listofFinalStr[j] = newStr
+        listofFinalStr.append(centerString)
+    return listofFinalStr
     
 
 def test():
