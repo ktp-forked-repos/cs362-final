@@ -1,10 +1,11 @@
 from re import search
 
+
 def parse_fasta(path):
     """
     Extract a list of sequences from a .fasta file.
     :param path: the path to the file
-    :return: the sequence contained in the file
+    :return: a dictionary with species name -> sequence
     """
     try:
         with open(path) as f:

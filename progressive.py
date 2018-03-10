@@ -42,6 +42,12 @@ def align_score(v, w):
 
 
 def multiple_align(node, sequences):
+    """
+    Recursively perform multiple sequence alignment along the guide tree
+    :param node: the root node of the guide tree
+    :param sequences: the dictionary of seqeucnes to align
+    :return:
+    """
     if len(node.children) == 0:
         return Profile([sequences[node.label]], [sequences[node.label]])
 

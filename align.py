@@ -33,8 +33,8 @@ def global_align(v, w, match, mismatch, indel):
         for j in range(1, n + 1):
             insert = D[i][j-1][0] + indel
             delete = D[i-1][j][0] + indel
-            substitute = D[i-1][j-1][0] + (match if v[i-1] == w[j-1]
-                                           else mismatch)
+            substitute = D[i-1][j-1][0] + (match if ((v[i-1] == w[j-1]) or (v[i-i] == "-") or
+                                                     (w[j-1] == "-")) else mismatch)
 
             # Set D[i][j] to the max of the recurrences
             if insert < delete and insert < substitute:
@@ -153,19 +153,19 @@ def multipleAlign(refString, listofSeq):
 def test():
     testList = ["abdc", "abcd", "accd", "bacd"]
     result = findCenterSeq(testList)
+
     align = global_align("abdc", "abcd", 0, 3, 1)
     gaps = align[3]
 
-    #print(len(gaps))
-    alignment = multipleAlign(result, testList)
-    #Sprint(result)
-    
-    for i in range(len(alignment)):
-        print(i)
-    
+    result2 = multipleAlgin(result, testList)
+    print(result)
+
+    print(result2)
+
 
 test()
     
+
     
     
     
