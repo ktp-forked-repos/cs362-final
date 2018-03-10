@@ -1,4 +1,3 @@
-
 class Node:
     def __init__(self, label):
         self.label = label
@@ -18,6 +17,14 @@ class Node:
 
 
 def score(c1, c2, distances, clusters):
+    """
+    Compute the neighbor joining distance score between two clusters
+    :param c1: the first cluster
+    :param c2: the other cluster
+    :param distances: the distance matrix
+    :param clusters: the list of clusters
+    :return: the score of (c1, c2)
+    """
     u1 = sum(distances[c1, ck] for ck in clusters if ck != c1)
     u2 = sum(distances[c2, ck] for ck in clusters if ck != c2)
 
@@ -48,6 +55,12 @@ def write_dot(root):
 
 
 def construct_tree(D, sequences):
+    """
+    Create a guide tree using neighbor joining.
+    :param D: the distance matrix
+    :param sequences: the dictionary of sequences
+    :return: the root of the constructed tree
+    """
 
     clusters = [Node(name) for name in sequences]
     distances = {(c1, c2): D[c1.label, c2.label] for c1 in clusters
@@ -73,16 +86,3 @@ def construct_tree(D, sequences):
     write_dot(clusters[0])
 
     return clusters[0]
-
-
-# sequences = ['A', 'B', 'C', 'D', 'E', 'F']
-# M = [[0, 5, 4, 7, 6, 8],
-#      [5, 0, 7, 10, 9, 11],
-#      [4, 7, 0, 7, 6, 8],
-#      [7, 10, 7, 0, 5, 9],
-#      [6, 9, 6, 5, 0, 8],
-#      [8, 11, 8, 9, 8, 0]]
-#
-# D = {(sequences[i], sequences[j]): M[i][j] for i in range(6) for j in range(6)}
-#
-# construct_tree(D, sequences)

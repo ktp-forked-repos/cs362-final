@@ -4,6 +4,7 @@ DELETE = 1
 SUBSTITUTE = 2
 
 
+# Load in BLOSUM62 matrix
 with open('blosum62.txt') as f:
     blosum_file = f.readlines()
 
@@ -38,10 +39,24 @@ class Profile:
 
 
 def psp_empty(p, i):
+    """
+    Calculate the PSP score of a profile column with an empty column
+    :param p: the profile whose score to compute
+    :param i: the index of the column
+    :return: the PSP score
+    """
     return sum(p[x, i] * blosum[x, '-'] for x in proteins)
 
 
 def psp(p1, p2, i, j):
+    """
+    Calculate the PSP score between two profile columns
+    :param p1: the first profile
+    :param p2: the other profile
+    :param i: the index of the p1 column
+    :param j: the index of the p2 column
+    :return: the PSP score
+    """
     return sum(p1[x, i]*p2[y, j]*blosum[x, y]
                for x in proteins for y in proteins)
 
@@ -69,7 +84,6 @@ def profile_align(p1, p2):
 
     # Recurrence
     for i in range(1, m + 1):
-        print(i)
         for j in range(1, n + 1):
             insert = D[i][j - 1][0] + psp_empty(p2, j-1)
             delete = D[i - 1][j][0] + psp_empty(p1, i-1)
