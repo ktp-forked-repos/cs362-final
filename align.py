@@ -113,10 +113,12 @@ def multipleAlign(refString, listofSeq):
     indel = 1
     
     listofFinalStr = []
-    listofSeq.remove(refString)
+    listofSeq.remove(refString) 
+    #remove the center sequence from the list of sequence
     centerString = refString
+    #construct a pointer to center squence
     l = len(listofSeq)
-    for i in range (l):
+    for i in range(l):
         score = global_align(centerString, listofSeq[i], match, mismatch, indel)
         centerString = score[1]
         strAligned = score[2]
@@ -124,8 +126,8 @@ def multipleAlign(refString, listofSeq):
         gapInsert = score[3]
         
         for j in range(len(listofFinalStr)):
-            newStr = originStr[:gapInsert[0]]
             originStr = listofFinalStr[j]
+            newStr = originStr[:gapInsert[0]]
             for k in range(len(1, gapInsert)):
                 curIndex = gapInsert[k]
                 if k == gapInsert[-1]:
@@ -143,6 +145,10 @@ def test():
     testList = ["abdc", "abcd", "accd", "bacd"]
     result = findCenterSeq(testList)
     print(result)
+    
+
+def main():
+    
     
     
     
