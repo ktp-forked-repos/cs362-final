@@ -52,13 +52,13 @@ def global_align(v, w, match, mismatch, indel):
     v_aligned = ''
     w_aligned = ''
     back_pointer = D[i][j][1]
-    gapInsert = []
+    gapInsert = [0]
     while back_pointer != START:
         if back_pointer == INSERT:
             j -= 1
             v_aligned = '-' + v_aligned
             w_aligned = w[j] + w_aligned
-            gapInsert.append(0);
+            gapInsert.append(0)
             
         elif back_pointer == DELETE:
             i -= 1
@@ -79,7 +79,7 @@ def global_align(v, w, match, mismatch, indel):
                     gapInsert[index] += 1        
         back_pointer = D[i][j][1]
         gapInsert.sort()
-
+        
     return D[m][n][0], v_aligned, w_aligned, gapInsert
 
 
@@ -112,11 +112,12 @@ def findCenterSeq(listofSeq):
     
 def multipleAlign(refString, listofSeq):
     match = 0
-    mismatch = 1
+    mismatch = 3
     indel = 1
     
     listofFinalStr = []
-    listofSeq.remove(refString) 
+    listofSeq.remove(refString)
+    
     #remove the center sequence from the list of sequence
     centerString = refString
     #construct a pointer to center squence
@@ -139,12 +140,14 @@ def multipleAlign(refString, listofSeq):
                     curIndex = gapInsert[k]
                     if curIndex == gapInsert[-1]:
                         newStr = newStr + "-" + originStr[curIndex:]
+                        print("HERE")
+
                     else:
+                        
                         nextIndex = gapInsert[k + 1]
                         newStr = newStr + "-" + originStr[curIndex:nextIndex]
                         listofFinalStr[j] = newStr
-                
-            
+                        print(listofFinalStr)
             
         listofFinalStr.append(centerString)
     return listofFinalStr
@@ -153,39 +156,18 @@ def multipleAlign(refString, listofSeq):
 def test():
     testList = ["abdc", "abcd", "accd", "bacd"]
     result = findCenterSeq(testList)
+<<<<<<< HEAD
 
     align = global_align("abdc", "abcd", 0, 3, 1)
     gaps = align[3]
 
+=======
+    for i in range(len(testList)-1):
+        print(global_align(result, testList[i], 0, 3, 1))
+>>>>>>> 79a668e1b7902a6279fe8fee7d64107f3b9460f9
     result2 = multipleAlign(result, testList)
     print(result)
-
     print(result2)
 
 
 test()
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
