@@ -37,9 +37,7 @@ def global_align(v, w, match, mismatch, indel):
                                            else mismatch)
 
             # Set D[i][j] to the max of the recurrences
-            if 0 > insert and 0 > delete and 0 > substitute:
-                D[i][j] = (0, START)
-            elif insert < delete and insert < substitute:
+            if insert < delete and insert < substitute:
                 D[i][j] = (insert, INSERT)
             elif delete < substitute:
                 D[i][j] = (delete, DELETE)
@@ -67,7 +65,7 @@ def global_align(v, w, match, mismatch, indel):
             v_aligned = v[i] + v_aligned
             w_aligned = '-' + w_aligned
             for index in range(len(gapInsert)):
-                gapInsert[index]+=
+                gapInsert[index] += 1
                 
         elif back_pointer == SUBSTITUTE:
             i -= 1
@@ -75,7 +73,7 @@ def global_align(v, w, match, mismatch, indel):
             v_aligned = v[i] + v_aligned
             w_aligned = w[j] + w_aligned
             for index in range(len(gapInsert)):
-                gapInsert[index]+=
+                gapInsert[index] += 1
                 
         back_pointer = D[i][j][1]
 
