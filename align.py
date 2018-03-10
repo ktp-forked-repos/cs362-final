@@ -156,15 +156,11 @@ def multipleAlign(refString, listofSeq):
 def test():
     testList = ["abdc", "abcd", "accd", "bacd"]
     result = findCenterSeq(testList)
-<<<<<<< HEAD
 
-    align = global_align("abdc", "abcd", 0, 3, 1)
-    gaps = align[3]
 
-=======
     for i in range(len(testList)-1):
         print(global_align(result, testList[i], 0, 3, 1))
->>>>>>> 79a668e1b7902a6279fe8fee7d64107f3b9460f9
+
     result2 = multipleAlign(result, testList)
     print(result)
     print(result2)
