@@ -87,7 +87,7 @@ def global_align(v, w, match, mismatch, indel):
 def findCenterSeq(listofSeq):
     
     match = 0
-    mismatch = 1
+    mismatch = 3
     indel = 1
     
     seqLen = len(listofSeq)
@@ -137,11 +137,11 @@ def multipleAlign(refString, listofSeq):
                 newStr = originStr[:gapInsert[0]]
                 for k in range(1, len(gapInsert)):
                     curIndex = gapInsert[k]
-                    if k == gapInsert[-1]:
-                        newStr = newStr + "-" + originStr[k:]
+                    if curIndex == gapInsert[-1]:
+                        newStr = newStr + "-" + originStr[curIndex:]
                     else:
                         nextIndex = gapInsert[k + 1]
-                        newStr = newStr + "-" + originStr[k:k+1]
+                        newStr = newStr + "-" + originStr[curIndex:nextIndex]
                         listofFinalStr[j] = newStr
                 
             
@@ -157,7 +157,7 @@ def test():
     align = global_align("abdc", "abcd", 0, 3, 1)
     gaps = align[3]
 
-    result2 = multipleAlgin(result, testList)
+    result2 = multipleAlign(result, testList)
     print(result)
 
     print(result2)
