@@ -64,21 +64,22 @@ def global_align(v, w, match, mismatch, indel):
             i -= 1
             v_aligned = v[i] + v_aligned
             w_aligned = '-' + w_aligned
-            for index in range(len(gapInsert)):
-                gapInsert[index] += 1
+            if len(gapInsert) > 0:
+                for index in range(len(gapInsert)):
+                    gapInsert[index] += 1
+            
                 
         elif back_pointer == SUBSTITUTE:
             i -= 1
             j -= 1
             v_aligned = v[i] + v_aligned
             w_aligned = w[j] + w_aligned
-            for index in range(len(gapInsert)):
-                gapInsert[index] += 1
-                
+            if len(gapInsert) > 0:
+                for index in range(len(gapInsert)):
+                    gapInsert[index] += 1        
         back_pointer = D[i][j][1]
         gapInsert.sort()
-        #print(gapInsert)
-
+        
     return D[m][n][0], v_aligned, w_aligned, gapInsert
 
 
@@ -124,7 +125,9 @@ def multipleAlign(refString, listofSeq):
     for i in range(l):
         score = global_align(centerString, listofSeq[i], match, mismatch, indel)
         centerString = score[1]
+        #print(centerString)
         strAligned = score[2]
+        #print(strAligned)
         listofFinalStr.append(strAligned)
         gapInsert = score[3]
         
@@ -145,9 +148,6 @@ def multipleAlign(refString, listofSeq):
                         newStr = newStr + "-" + originStr[curIndex:nextIndex]
                         listofFinalStr[j] = newStr
                         print(listofFinalStr)
-                
-            
-            #print(j, newStr)
             
         listofFinalStr.append(centerString)
     return listofFinalStr
@@ -161,30 +161,6 @@ def test():
     result2 = multipleAlign(result, testList)
     print(result)
     print(result2)
-    
 
-#def main():
+
 test()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
