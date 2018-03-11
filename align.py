@@ -117,8 +117,7 @@ def multipleAlign(refString, listofSeq):
     
     listofFinalStr = []
     listofSeq.remove(refString)
-    
-    #remove the center sequence from the list of sequence
+    #remove the center sequence from the list of sequence so it won't align to #itself
     centerString = refString
     #construct a pointer to center squence
     l = len(listofSeq)
@@ -129,27 +128,15 @@ def multipleAlign(refString, listofSeq):
         strAligned = score[2]
         #print(strAligned)
         listofFinalStr.append(strAligned)
+        #print(len(listofFinalStr))
         gapInsert = score[3]
-        
-        for j in range(len(listofFinalStr)):
-            #for all the previously aligned sequence
-            originStr = listofFinalStr[j]
-            if len(gapInsert) > 0:
-                newStr = originStr[:gapInsert[0]]
-                for k in range(1, len(gapInsert)):
-                    curIndex = gapInsert[k]
-                    if curIndex == gapInsert[-1]:
-                        newStr = newStr + "-" + originStr[curIndex:]
-                        print("HERE")
+    
+    for j in range(len(listofFinalStr)):
+        finalScore = global_align(centerString, listofFinalStr[j], match, mismatch, indel)
+        finalStr = finalScore[2]
+        listofFinalStr[j] = finalStr
 
-                    else:
-                        
-                        nextIndex = gapInsert[k + 1]
-                        newStr = newStr + "-" + originStr[curIndex:nextIndex]
-                        listofFinalStr[j] = newStr
-                        print(listofFinalStr)
-            
-        listofFinalStr.append(centerString)
+    listofFinalStr.append(centerString)
     return listofFinalStr
     
 
@@ -158,11 +145,11 @@ def test():
     result = findCenterSeq(testList)
 
 
-    for i in range(len(testList)-1):
-        print(global_align(result, testList[i], 0, 3, 1))
+    #for i in range(len(testList)-1):
+        #print(global_align(result, testList[i], 0, 3, 1))
 
     result2 = multipleAlign(result, testList)
-    print(result)
+    #print(result)
     print(result2)
 
 
