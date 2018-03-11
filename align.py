@@ -1,12 +1,16 @@
+from parse import parse_fasta
+from neighbor_join import construct_tree
+
 START = -1
 INSERT = 0
 DELETE = 1
 SUBSTITUTE = 2
 
 
-def global_align(v, w, match, mismatch, indel):
+def pairwise(v, w, match, mismatch, indel):
     """
-    Finds an optimal global alignment of v and w using Needleman-Wunsch.
+    Finds an pairwise distance of v and w using Needleman-Wunsch and taking gaps
+    into consideration.
     :param v: first string to align
     :param w: other string to align
     :param match: score for matches
@@ -33,9 +37,7 @@ def global_align(v, w, match, mismatch, indel):
         for j in range(1, n + 1):
             insert = D[i][j-1][0] + indel
             delete = D[i-1][j][0] + indel
-            substitute = D[i-1][j-1][0] + (match if ((v[i-1] == w[j-1]) or (v[i-i] == "-") or
-                                                     (w[j-1] == "-")) else mismatch)
-
+            substitute = D[i-1][j-1][0] + (match if ((v[i-1] == w[j-1]) or (v[i-i] == "-") or (w[j-1] == "-")) else mismatch)
             # Set D[i][j] to the max of the recurrences
             if insert < delete and insert < substitute:
                 D[i][j] = (insert, INSERT)
@@ -52,40 +54,36 @@ def global_align(v, w, match, mismatch, indel):
     v_aligned = ''
     w_aligned = ''
     back_pointer = D[i][j][1]
-    gapInsert = [0]
     while back_pointer != START:
         if back_pointer == INSERT:
             j -= 1
             v_aligned = '-' + v_aligned
             w_aligned = w[j] + w_aligned
-            gapInsert.append(0)
             
         elif back_pointer == DELETE:
             i -= 1
             v_aligned = v[i] + v_aligned
             w_aligned = '-' + w_aligned
-            if len(gapInsert) > 0:
-                for index in range(len(gapInsert)):
-                    gapInsert[index] += 1
-            
                 
         elif back_pointer == SUBSTITUTE:
             i -= 1
             j -= 1
             v_aligned = v[i] + v_aligned
-            w_aligned = w[j] + w_aligned
-            if len(gapInsert) > 0:
-                for index in range(len(gapInsert)):
-                    gapInsert[index] += 1        
+            w_aligned = w[j] + w_aligned       
         back_pointer = D[i][j][1]
-        gapInsert.sort()
+
         
-    return D[m][n][0], v_aligned, w_aligned, gapInsert
+    return D[m][n][0], v_aligned, w_aligned
 
 
 
 def findCenterSeq(listofSeq):
-    
+    """
+    Finds the center sequence by taking the sequence with minimum of sum of edit
+    distances.
+    :param listofSeq: Sequences passed by parse.py
+    :return: the center sequence
+    """
     match = 0
     mismatch = 3
     indel = 1
@@ -100,7 +98,7 @@ def findCenterSeq(listofSeq):
             # in1 gives row, in2 gives column 
             in1 = listofSeq.index(seq)
             in2 = listofSeq.index(seq2)
-            pwMatrix[in1][in2] = global_align(seq, seq2, match, mismatch, indel)
+            pwMatrix[in1][in2] = pairwise(seq, seq2, match, mismatch, indel)
             acc += pwMatrix[in1][in2][0]
         findMin.append(acc)
         acc = 0
@@ -110,11 +108,16 @@ def findCenterSeq(listofSeq):
     return listofSeq[posSeq]
     
     
-def multipleAlign(refString, listofSeq):
+def centerStar_align(refString, listofSeq, mismatch, indel):
+    """
+    Aligns all the sequences with Center Star MSA using Needleman-Wunsch.
+    :param refString: the center sequence
+    :param listofSeq: all the sequences need to be aligned
+    :param mismatch: score for mismatch in alignment
+    :param indel: score for indel in alignment
+    :return: a list of aligned sequences
+    """
     match = 0
-    mismatch = 3
-    indel = 1
-    
     listofFinalStr = []
     listofSeq.remove(refString)
     #remove the center sequence from the list of sequence so it won't align to #itself
@@ -122,35 +125,36 @@ def multipleAlign(refString, listofSeq):
     #construct a pointer to center squence
     l = len(listofSeq)
     for i in range(l):
-        score = global_align(centerString, listofSeq[i], match, mismatch, indel)
+        score = pairwise(centerString, listofSeq[i], match, mismatch, indel)
         centerString = score[1]
         #print(centerString)
         strAligned = score[2]
         #print(strAligned)
         listofFinalStr.append(strAligned)
         #print(len(listofFinalStr))
-        gapInsert = score[3]
     
     for j in range(len(listofFinalStr)):
-        finalScore = global_align(centerString, listofFinalStr[j], match, mismatch, indel)
+        finalScore = pairwise(centerString, listofFinalStr[j], match, mismatch, indel)
         finalStr = finalScore[2]
         listofFinalStr[j] = finalStr
 
     listofFinalStr.append(centerString)
     return listofFinalStr
-    
 
-def test():
-    testList = ["abdc", "abcd", "accd", "bacd"]
-    result = findCenterSeq(testList)
+def main():
+    print('Reading fasta file...')
+    sequences = parse_fasta('COMP.txt')
+
+    print('Computing pairwise edit distances...', end='', flush=True)
+    D = {(a, b): -align_score(sequences[a], sequences[b])
+         for a in sequences for b in sequences}
+    print()
+
+    print('Performing center star alignment...', end='', flush=True)
+    center = findCenterSeq(sequences)
+    profile = centerStar_align(center, sequences)
 
 
-    #for i in range(len(testList)-1):
-        #print(global_align(result, testList[i], 0, 3, 1))
 
-    result2 = multipleAlign(result, testList)
-    #print(result)
-    print(result2)
-
-
-test()
+if __name__ == '__main__':
+    main()
