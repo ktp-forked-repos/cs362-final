@@ -57,15 +57,18 @@ def pairwise(v, w):
 
     return D[m][n][0]
 
-def findCenterSeq(listofSeq):
+def findCenterSeq(dictofSeq):
     """
     Finds the center sequence by taking the sequence with minimum of sum of edit
     distances.
-    :param listofSeq: Sequences passed by parse.py
-    :return: the center sequence
+    :param dictofSeq: Sequences passed by parse.py
+    :return: the Name of center sequence
     """
-    seqLen = len(listofSeq)
+    seqLen = len(dictofSeq)
     pwMatrix = [["-"]*seqLen for i in range(seqLen)]
+    listofSeq = []
+    for key in dictofSeq:
+        listofSeq.append(dictofSeq.get(key))
     
     findMin = []
     acc = 0
@@ -79,8 +82,14 @@ def findCenterSeq(listofSeq):
         findMin.append(acc)
         acc = 0
     posSeq = findMin.index(min(findMin))
+    refString = listofSeq[posSeq]
+    refName = ""
     
-    return listofSeq[posSeq]
+    for name, seq in dictofSeq.items():
+        if seq == refString:
+            refName = name
+            
+    return refName
 
 def sequence_align(string_v, string_w):
     """
@@ -140,37 +149,35 @@ def sequence_align(string_v, string_w):
         
     return v_aligned, w_aligned
 
-def centerStar_align(refString, listofSeq):
+def centerStar_align(refName, dictofSeq):
     """
     Aligns all the sequences with Center Star MSA using Needleman-Wunsch.
     :param refString: the center sequence
     :param listofSeq: all the sequences need to be aligned
     :return: a list of aligned sequences
     """
-    match = 0
-    listofFinalStr = []
-    listofSeq.remove(refString)
+    dictofFinalStr = {}
+    refString = dictofSeq.pop(refName)
     #remove the center sequence from the list of sequence so it won't align to itself
     centerString = refString
     #construct a pointer to center squence
-    l = len(listofSeq)
-    for i in range(l):
-        alignment = sequence_align(centerString, listofSeq[i])
+    for name in dictofSeq:
+        alignment = sequence_align(centerString, dictofSeq.get(name))
         centerString = alignment[1]
         #print(centerString)
         strAligned = alignment[2]
         #print(strAligned)
-        listofFinalStr.append(strAligned)
+        dictofFinalStr[name] = strAligned
         #print(len(listofFinalStr))
     
-    for j in range(len(listofFinalStr)):
+    for seq in dictofFinalStr:
         #Aligns all the sequence to the final center sequence with all the gaps inserted
-        finalScore = sequence_align(centerString, listofFinalStr[j])
+        finalScore = sequence_align(centerString, listofFinalStr.get[seq])
         finalStr = finalScore[2]
-        listofFinalStr[j] = finalStr
+        dicofFinalStr[seq] = finalStr
 
-    listofFinalStr.append(centerString)
-    return listofFinalStr
+    dictofFinalStr[refName] = (centerString)
+    return dictofFinalStr
 
 def main():
     print('Reading fasta file...')
@@ -178,7 +185,6 @@ def main():
     
     print('Performing center star alignment...', end='', flush=True)
     center = findCenterSeq(sequences)
-    #For parsing, it does not pass in a list, still need to work on change dictionary into a list
     alignment = centerStar_align(center, sequences)
 
 if __name__ == '__main__':
