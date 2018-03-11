@@ -83,6 +83,12 @@ def findCenterSeq(listofSeq):
     return listofSeq[posSeq]
 
 def sequence_align(string_v, string_w):
+    """
+    Finds an optimal global alignment of string v and string w using Needleman-Wunsch.
+    :param string_v: first string to align
+    :param string_w: other string to align
+    :return: a tuple (v_aligned, w_aligned) of aligned strings
+    """
     m = len(string_v)
     n = len(string_w)
 
@@ -144,20 +150,21 @@ def centerStar_align(refString, listofSeq):
     match = 0
     listofFinalStr = []
     listofSeq.remove(refString)
-    #remove the center sequence from the list of sequence so it won't align to #itself
+    #remove the center sequence from the list of sequence so it won't align to itself
     centerString = refString
     #construct a pointer to center squence
     l = len(listofSeq)
     for i in range(l):
-        score = sequence_align(centerString, listofSeq[i])
-        centerString = score[1]
+        alignment = sequence_align(centerString, listofSeq[i])
+        centerString = alignment[1]
         #print(centerString)
-        strAligned = score[2]
+        strAligned = alignment[2]
         #print(strAligned)
         listofFinalStr.append(strAligned)
         #print(len(listofFinalStr))
     
     for j in range(len(listofFinalStr)):
+        #Aligns all the sequence to the final center sequence with all the gaps inserted
         finalScore = sequence_align(centerString, listofFinalStr[j])
         finalStr = finalScore[2]
         listofFinalStr[j] = finalStr
