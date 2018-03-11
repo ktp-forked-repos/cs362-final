@@ -171,7 +171,8 @@ def main():
     
     print('Performing center star alignment...', end='', flush=True)
     center = findCenterSeq(sequences)
-    profile = centerStar_align(center, sequences)
+    #For parsing, it does not pass in a list, still need to work on change dictionary into a list
+    alignment = centerStar_align(center, sequences)
 
 if __name__ == '__main__':
     main()
