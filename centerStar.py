@@ -19,21 +19,21 @@ for line in blosum_file[1:]:
         blosum[line[0], proteins[index]] = int(entry)
 
     
-def pairwise(v, w):
+def pairwise(string_v, string_w):
     """
     Finds an pairwise distance of v and w using Needleman-Wunsch and taking gaps
     into consideration.
-    :param v: first string to align
-    :param w: other string to align
+    :param string_v: first string to align
+    :param string_w: other string to align
     :return: a tuple (score, v_aligned, w_aligned) with the optimal score
     and aligned strings
     """
-    m = len(v)
-    n = len(w)
+    m = len(string_v)
+    n = len(string_w)
 
     # Initialization; D[i][j][0] contains the max alignment score of the
     # ith prefix of v and the jth of w; D[i][j][1] contains the back pointer.
-    D = [[(0, START) for _ in range(n + 1)] for _ in range(m + 1)]
+    D = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
 
     for i in range(1, m + 1):
         D[i][0] = i
@@ -46,7 +46,7 @@ def pairwise(v, w):
         for j in range(1, n + 1):
             insert = D[i][j-1] + 1
             delete = D[i-1][j] + 1
-            substitute = D[i-1][j-1] + (0 if (v[i-1] == w[j-1]) else 1)
+            substitute = D[i-1][j-1] + (0 if (string_v[i-1] == string_w[j-1]) else 1)
             # Set D[i][j] to the max of the recurrences
             if insert < delete and insert < substitute:
                 D[i][j] = insert
@@ -108,17 +108,17 @@ def sequence_align(string_v, string_w):
     D = [[(0, START) for _ in range(n + 1)] for _ in range(m + 1)]
 
     for i in range(1, m + 1):
-        D[i][0] = (i * indel, DELETE)
+        D[i][0] = (blosum['-', string_v[i]], DELETE)
 
     for j in range(1, n + 1):
-        D[0][j] = (j * indel, INSERT)
+        D[0][j] = (blosum['-', string_w[j]], INSERT)
 
     # Recurrence
     for i in range(1, m + 1):
         for j in range(1, n + 1):
-            insert = D[i][j-1][0] + blosum['-', w[j - 1]]
-            delete = D[i-1][j][0] + blosum[v[i - 1], '-']
-            substitute = D[i-1][j-1][0] + blosum[v[i - 1], w[j - 1]]
+            insert = D[i][j-1][0] + blosum['-', string_w[j - 1]]
+            delete = D[i-1][j][0] + blosum[string_v[i - 1], '-']
+            substitute = D[i-1][j-1][0] + blosum[string_v[i - 1], string_w[j - 1]]
             # Set D[i][j] to the max of the recurrences
             if insert > delete and insert > substitute:
                 D[i][j] = (insert, INSERT)
@@ -135,18 +135,18 @@ def sequence_align(string_v, string_w):
         if back_pointer == INSERT:
             j -= 1
             v_aligned = '-' + v_aligned
-            w_aligned = w[j] + w_aligned
+            w_aligned = string_w[j] + w_aligned
             
         elif back_pointer == DELETE:
             i -= 1
-            v_aligned = v[i] + v_aligned
+            v_aligned = string_v[i] + v_aligned
             w_aligned = '-' + w_aligned
                 
         elif back_pointer == SUBSTITUTE:
             i -= 1
             j -= 1
-            v_aligned = v[i] + v_aligned
-            w_aligned = w[j] + w_aligned       
+            v_aligned = string_v[i] + v_aligned
+            w_aligned = string_w[j] + w_aligned       
         back_pointer = D[i][j][1]
         
     return v_aligned, w_aligned
@@ -174,7 +174,7 @@ def centerStar_align(refName, dictofSeq):
     
     for seq in dictofFinalStr:
         #Aligns all the sequence to the final center sequence with all the gaps inserted
-        finalScore = sequence_align(centerString, listofFinalStr.get[seq])
+        finalScore = sequence_align(centerString, dictofFinalStr[seq])
         finalStr = finalScore[2]
         dicofFinalStr[seq] = finalStr
 
