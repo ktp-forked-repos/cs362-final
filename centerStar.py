@@ -36,26 +36,26 @@ def pairwise(v, w):
     D = [[(0, START) for _ in range(n + 1)] for _ in range(m + 1)]
 
     for i in range(1, m + 1):
-        D[i][0] = (i, DELETE)
+        D[i][0] = i
 
     for j in range(1, n + 1):
-        D[0][j] = (j, INSERT)
+        D[0][j] = j
 
     # Recurrence
     for i in range(1, m + 1):
         for j in range(1, n + 1):
-            insert = D[i][j-1][0] + 1
-            delete = D[i-1][j][0] + 1
-            substitute = D[i-1][j-1][0] + (0 if ((v[i-1] == w[j-1]) or (v[i-i] == "-") or (w[j-1] == "-")) else 1)
+            insert = D[i][j-1] + 1
+            delete = D[i-1][j] + 1
+            substitute = D[i-1][j-1] + (0 if (v[i-1] == w[j-1]) else 1)
             # Set D[i][j] to the max of the recurrences
             if insert < delete and insert < substitute:
-                D[i][j] = (insert, INSERT)
+                D[i][j] = insert
             elif delete < substitute:
-                D[i][j] = (delete, DELETE)
+                D[i][j] = delete
             else:
-                D[i][j] = (substitute, SUBSTITUTE)
+                D[i][j] = substitute
 
-    return D[m][n][0]
+    return D[m][n]
 
 def findCenterSeq(dictofSeq):
     """
@@ -78,7 +78,7 @@ def findCenterSeq(dictofSeq):
             in1 = listofSeq.index(seq)
             in2 = listofSeq.index(seq2)
             pwMatrix[in1][in2] = pairwise(seq, seq2)
-            acc += pwMatrix[in1][in2][0]
+            acc += pwMatrix[in1][in2]
             #TypeError: 'int' object is not subscriptable
         findMin.append(acc)
         acc = 0
