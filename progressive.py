@@ -37,7 +37,6 @@ def align_score(v, w):
 
             D[i][j] = max(insert, delete, substitute)
 
-    print('.', end='', flush=True)
     return D[m][n]
 
 
@@ -62,6 +61,17 @@ def main():
     print('Computing pairwise edit distances...', end='', flush=True)
     D = {(a, b): -align_score(sequences[a], sequences[b])
          for a in sequences for b in sequences}
+    print()
+
+    for a in sequences:
+        print(a, end=' ')
+
+    for a in sequences:
+        print()
+        print(a, end=' ')
+        for b in sequences:
+            print(D[a, b], end=' ')
+
     print()
 
     print('Constructing guide tree...')
