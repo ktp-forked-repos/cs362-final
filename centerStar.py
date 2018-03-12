@@ -137,17 +137,72 @@ def sequence_align(string_v, string_w):
             j -= 1
             v_aligned = '-' + v_aligned
             w_aligned = string_w[j] + w_aligned
+
             
         elif back_pointer == DELETE:
             i -= 1
             v_aligned = string_v[i] + v_aligned
             w_aligned = '-' + w_aligned
-                
+
         elif back_pointer == SUBSTITUTE:
             i -= 1
             j -= 1
             v_aligned = string_v[i] + v_aligned
-            w_aligned = string_w[j] + w_aligned       
+            w_aligned = string_w[j] + w_aligned
+
+                    
+        back_pointer = D[i][j][1]
+        
+    return v_aligned, w_aligned
+
+def gap_align(string_v, string_w):
+    """
+    Finds an optimal global alignment of string v and string w using Needleman-Wunsch.
+    :param string_v: first string to align
+    :param string_w: other string to align
+    :return: a tuple (v_aligned, w_aligned) of aligned strings
+    """
+    m = len(string_v)
+    n = len(string_w)
+
+    # Initialization; D[i][j][0] contains the max alignment score of the
+    # ith prefix of v and the jth of w; D[i][j][1] contains the back pointer.
+    D = [[(0, START) for _ in range(n + 1)] for _ in range(m + 1)]
+
+    for i in range(1, m + 1):
+        D[i][0] = (D[i - 1][0][0] + blosum['-', string_v[i - 1]], DELETE)
+
+    for j in range(1, n + 1):
+        D[0][j] = (D[0][j - 1][0] + blosum['-', string_w[j - 1]], INSERT)
+
+    # Recurrence
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            delete = D[i-1][j][0] + blosum[string_v[i - 1], '-']
+            substitute = D[i-1][j-1][0] + blosum[string_v[i - 1], string_w[j - 1]]
+            # Set D[i][j] to the max of the recurrences
+            if delete > substitute:
+                D[i][j] = (delete, DELETE)
+            else:
+                D[i][j] = (substitute, SUBSTITUTE)
+
+    i, j = m, n
+    v_aligned = ''
+    w_aligned = ''
+    back_pointer = D[i][j][1]
+    while back_pointer != START:
+        if back_pointer == DELETE:
+            i -= 1
+            v_aligned = string_v[i] + v_aligned
+            w_aligned = '-' + w_aligned
+
+        elif back_pointer == SUBSTITUTE:
+            i -= 1
+            j -= 1
+            v_aligned = string_v[i] + v_aligned
+            w_aligned = string_w[j] + w_aligned
+
+                    
         back_pointer = D[i][j][1]
         
     return v_aligned, w_aligned
@@ -172,10 +227,10 @@ def centerStar_align(refName, dictofSeq):
         #print(strAligned)
         dictofFinalStr[name] = strAligned
         #print(len(listofFinalStr))
-    
+
     for seq in dictofFinalStr:
         #Aligns all the sequence to the final center sequence with all the gaps inserted
-        finalScore = sequence_align(centerString, dictofFinalStr[seq])
+        finalScore = gap_align(centerString, dictofFinalStr[seq])
         finalStr = finalScore[1]
         dictofFinalStr[seq] = finalStr
 
