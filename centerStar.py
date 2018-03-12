@@ -36,10 +36,10 @@ def pairwise(v, w):
     D = [[(0, START) for _ in range(n + 1)] for _ in range(m + 1)]
 
     for i in range(1, m + 1):
-        D[i][0] = (i * indel, DELETE)
+        D[i][0] = (i, DELETE)
 
     for j in range(1, n + 1):
-        D[0][j] = (j * indel, INSERT)
+        D[0][j] = (j, INSERT)
 
     # Recurrence
     for i in range(1, m + 1):
@@ -79,10 +79,12 @@ def findCenterSeq(dictofSeq):
             in2 = listofSeq.index(seq2)
             pwMatrix[in1][in2] = pairwise(seq, seq2)
             acc += pwMatrix[in1][in2][0]
+            #TypeError: 'int' object is not subscriptable
         findMin.append(acc)
         acc = 0
     posSeq = findMin.index(min(findMin))
     refString = listofSeq[posSeq]
+    print(refString)
     refName = ""
     
     for name, seq in dictofSeq.items():
