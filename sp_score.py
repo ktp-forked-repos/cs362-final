@@ -1,6 +1,16 @@
-from profile import blosum
+"""
+Script to compute the Sum-of-Pair score of a multiple sequence alignment.
+"""
 
-with open('progressive_alignment_comp.txt') as f:
+
+from profile import blosum
+import sys
+
+if len(sys.argv) != 2:
+    print('Usage: python3 sp_score.py msa_file')
+    exit()
+
+with open(sys.argv[1]) as f:
     alignments = [line.strip() for line in f.readlines()]
 
 sp_score = 0

@@ -37,7 +37,7 @@ def pairwise(v, w, match, mismatch, indel):
         for j in range(1, n + 1):
             insert = D[i][j-1][0] + indel
             delete = D[i-1][j][0] + indel
-            substitute = D[i-1][j-1][0] + (match if ((v[i-1] == w[j-1]) or (v[i-i] == "-") or (w[j-1] == "-")) else mismatch)
+            substitute = D[i-1][j-1][0] + (match if ((v[i-1] == w[j-1]) or (v[i-1] == "-" or w[j-1] == "-")) else mismatch)
             # Set D[i][j] to the max of the recurrences
             if insert < delete and insert < substitute:
                 D[i][j] = (insert, INSERT)
@@ -105,9 +105,10 @@ def findCenterSeq(listofSeq):
     
     posSeq = findMin.index(min(findMin))
     
+    print(pwMatrix)
     return listofSeq[posSeq]
-    
-    
+
+
 def centerStar_align(refString, listofSeq, mismatch, indel):
     """
     Aligns all the sequences with Center Star MSA using Needleman-Wunsch.
@@ -137,7 +138,6 @@ def centerStar_align(refString, listofSeq, mismatch, indel):
         finalScore = pairwise(centerString, listofFinalStr[j], match, mismatch, indel)
         finalStr = finalScore[2]
         listofFinalStr[j] = finalStr
-
     listofFinalStr.append(centerString)
     return listofFinalStr
 

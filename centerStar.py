@@ -245,5 +245,12 @@ def main():
     center = findCenterSeq(sequences)
     alignment = centerStar_align(center, sequences)
 
+    with open('center_start_alignment.txt', 'w') as f:
+        f.write('\n'.join(['{}: {}'.format(key, value)
+                           for key, value in alignment.items()]))
+
+    for name in alignment:
+        print(alignment[name])
+
 if __name__ == '__main__':
     main()
