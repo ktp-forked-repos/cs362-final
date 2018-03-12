@@ -84,13 +84,14 @@ def findCenterSeq(dictofSeq):
         acc = 0
     posSeq = findMin.index(min(findMin))
     refString = listofSeq[posSeq]
-    print(refString)
     refName = ""
     
     for name, seq in dictofSeq.items():
         if seq == refString:
             refName = name
-            
+    
+    print(refName)
+    
     return refName
 
 def sequence_align(string_v, string_w):
@@ -108,10 +109,10 @@ def sequence_align(string_v, string_w):
     D = [[(0, START) for _ in range(n + 1)] for _ in range(m + 1)]
 
     for i in range(1, m + 1):
-        D[i][0] = (D[i - 1][0][0] + blosum['-', string_v[i]], DELETE)
+        D[i][0] = (D[i - 1][0][0] + blosum['-', string_v[i - 1]], DELETE)
 
     for j in range(1, n + 1):
-        D[0][j] = (D[0][j - 1][0] + blosum['-', string_w[j]], INSERT)
+        D[0][j] = (D[0][j - 1][0] + blosum['-', string_w[j - 1]], INSERT)
 
     # Recurrence
     for i in range(1, m + 1):
@@ -165,9 +166,9 @@ def centerStar_align(refName, dictofSeq):
     #construct a pointer to center squence
     for name in dictofSeq:
         alignment = sequence_align(centerString, dictofSeq.get(name))
-        centerString = alignment[1]
+        centerString = alignment[0]
         #print(centerString)
-        strAligned = alignment[2]
+        strAligned = alignment[1]
         #print(strAligned)
         dictofFinalStr[name] = strAligned
         #print(len(listofFinalStr))
@@ -175,8 +176,8 @@ def centerStar_align(refName, dictofSeq):
     for seq in dictofFinalStr:
         #Aligns all the sequence to the final center sequence with all the gaps inserted
         finalScore = sequence_align(centerString, dictofFinalStr[seq])
-        finalStr = finalScore[2]
-        dicofFinalStr[seq] = finalStr
+        finalStr = finalScore[1]
+        dictofFinalStr[seq] = finalStr
 
     dictofFinalStr[refName] = (centerString)
     return dictofFinalStr
