@@ -108,10 +108,10 @@ def sequence_align(string_v, string_w):
     D = [[(0, START) for _ in range(n + 1)] for _ in range(m + 1)]
 
     for i in range(1, m + 1):
-        D[i][0] = (blosum['-', string_v[i]], DELETE)
+        D[i][0] = (D[i - 1][0][0] + blosum['-', string_v[i]], DELETE)
 
     for j in range(1, n + 1):
-        D[0][j] = (blosum['-', string_w[j]], INSERT)
+        D[0][j] = (D[0][j - 1][0] + blosum['-', string_w[j]], INSERT)
 
     # Recurrence
     for i in range(1, m + 1):
